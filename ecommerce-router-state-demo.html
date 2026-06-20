@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>电商购物平台前端路由器及状态管理实验</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", Arial, sans-serif;
+      color: #1f2937;
+      background: #f4f7fb;
+    }
+    .hidden { display: none !important; }
+    .login {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      background: #fff;
+    }
+    .login-hero {
+      display: flex;
+      align-items: flex-end;
+      padding: 56px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(16, 24, 40, .88), rgba(20, 184, 166, .64)),
+        url("https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&w=1400&q=80") center/cover;
+    }
+    .login-hero h1 { margin: 8px 0 12px; font-size: 48px; }
+    .login-hero p { margin: 0; font-size: 17px; }
+    .login-panel {
+      display: flex;
+      align-items: center;
+      padding: 44px;
+    }
+    .login-card { width: 100%; }
+    .login-card h2 { margin: 0 0 8px; font-size: 26px; }
+    .hint { margin: 0 0 24px; color: #667085; }
+    label { display: block; margin: 16px 0 8px; font-weight: 700; }
+    input {
+      width: 100%;
+      height: 42px;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      padding: 0 12px;
+      font-size: 15px;
+    }
+    button {
+      height: 40px;
+      border: 0;
+      border-radius: 8px;
+      padding: 0 16px;
+      cursor: pointer;
+      font-weight: 700;
+      background: #2563eb;
+      color: #fff;
+    }
+    button.secondary { background: #ecfeff; color: #0f766e; border: 1px solid #99f6e4; }
+    button.danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .full { width: 100%; margin-top: 22px; }
+    .shell { min-height: 100vh; display: grid; grid-template-columns: 232px 1fr; }
+    aside { background: #101828; color: #fff; padding: 22px 14px; }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 0 10px 22px; }
+    .brand-mark {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 8px;
+      background: #14b8a6;
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .brand small { display: block; margin-top: 3px; color: #a7b3c8; }
+    nav button {
+      width: 100%;
+      margin-bottom: 8px;
+      text-align: left;
+      background: transparent;
+      color: #d6deec;
+    }
+    nav button.active, nav button:hover { background: #1f2937; color: #fff; }
+    header {
+      height: 86px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    header h1 { margin: 0; font-size: 22px; }
+    header p { margin: 6px 0 0; color: #667085; }
+    main { padding: 28px; }
+    .stack { display: grid; gap: 22px; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .metric, .card, .checkout {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .metric { padding: 18px 20px; }
+    .metric span { display: block; color: #667085; }
+    .metric strong { display: block; margin-top: 8px; font-size: 28px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+    .card { overflow: hidden; }
+    .card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
+    .card-body { padding: 18px; display: grid; gap: 10px; }
+    .tag {
+      display: inline-block;
+      width: fit-content;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #ecfeff;
+      color: #0f766e;
+      font-size: 13px;
+    }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .price { color: #dc2626; font-size: 22px; font-weight: 800; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td { padding: 14px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+    th { background: #f8fafc; }
+    .product-cell { display: flex; align-items: center; gap: 12px; }
+    .product-cell img { width: 64px; height: 48px; border-radius: 6px; object-fit: cover; }
+    .checkout { padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; }
+    .empty {
+      padding: 48px;
+      text-align: center;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+    }
+    .alert {
+      padding: 14px 16px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    @media (max-width: 860px) {
+      .login, .shell, .metrics { grid-template-columns: 1fr; }
+      header, .checkout { height: auto; flex-direction: column; align-items: flex-start; padding: 18px; }
+      .login-hero { min-height: 320px; padding: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <section id="loginPage" class="login">
+    <div class="login-hero">
+      <div>
+        <p>Vue Router + Pinia 实验模拟版</p>
+        <h1>电商购物平台</h1>
+        <p>演示路由守卫、登录状态管理和 localStorage 持久化。</p>
+      </div>
+    </div>
+    <div class="login-panel">
+      <div class="login-card">
+        <h2>账号登录</h2>
+        <p class="hint">测试账号：admin / 123456</p>
+        <label for="username">用户名</label>
+        <input id="username" value="admin">
+        <label for="password">密码</label>
+        <input id="password" type="password" value="123456">
+        <button class="full" onclick="login()">登录并进入商品页</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="appPage" class="shell hidden">
+    <aside>
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <div>
+          <strong>电商购物平台</strong>
+          <small>Router + State</small>
+        </div>
+      </div>
+      <nav>
+        <button data-route="products" onclick="navigate('products')">商品管理</button>
+        <button data-route="cart" onclick="navigate('cart')">购物车</button>
+        <button data-route="orders" onclick="navigate('orders')">我的订单</button>
+      </nav>
+    </aside>
+    <section>
+      <header>
+        <div>
+          <h1 id="title">商品管理</h1>
+          <p>已启用路由守卫、状态持久化和登录状态恢复</p>
+        </div>
+        <div class="row">
+          <span class="tag" id="nickname">平台管理员</span>
+          <button class="secondary" onclick="logout()">退出登录</button>
+        </div>
+      </header>
+      <main id="view"></main>
+    </section>
+  </section>
+
+  <script>
+    const products = [
+      { id: 1, name: '智能降噪耳机', category: '数码配件', price: 299, stock: 36, sales: 1280, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80' },
+      { id: 2, name: '轻薄机械键盘', category: '办公设备', price: 399, stock: 18, sales: 864, image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80' },
+      { id: 3, name: '便携保温杯', category: '生活用品', price: 89, stock: 92, sales: 2413, image: 'https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=600&q=80' },
+      { id: 4, name: '人体工学办公椅', category: '家具家居', price: 899, stock: 11, sales: 306, image: 'https://images.unsplash.com/photo-1505843490701-5be5d83bb2c8?auto=format&fit=crop&w=600&q=80' }
+    ];
+
+    const orders = [
+      { id: 'OD20260620001', name: '智能降噪耳机', amount: 299, status: '已完成', createdAt: '2026-06-20 10:24' },
+      { id: 'OD20260620002', name: '轻薄机械键盘', amount: 399, status: '待发货', createdAt: '2026-06-20 14:18' },
+      { id: 'OD20260620003', name: '便携保温杯', amount: 178, status: '已完成', createdAt: '2026-06-19 19:42' }
+    ];
+
+    function getCart() {
+      try { return JSON.parse(localStorage.getItem('cartItems') || '[]'); }
+      catch { return []; }
+    }
+
+    function setCart(items) {
+      localStorage.setItem('cartItems', JSON.stringify(items));
+    }
+
+    function isLoggedIn() {
+      return Boolean(localStorage.getItem('token'));
+    }
+
+    function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (username !== 'admin' || password !== '123456') {
+        alert('账号或密码错误');
+        return;
+      }
+      localStorage.setItem('token', `mock-token-${Date.now()}`);
+      localStorage.setItem('userId', '10001');
+      localStorage.setItem('username', 'admin');
+      localStorage.setItem('nickname', '平台管理员');
+      navigate('products');
+    }
+
+    function logout() {
+      ['token', 'userId', 'username', 'nickname'].forEach(key => localStorage.removeItem(key));
+      location.hash = '#/login';
+      render();
+    }
+
+    function navigate(route) {
+      if (!isLoggedIn()) {
+        location.hash = '#/login';
+      } else {
+        location.hash = `#/${route}`;
+      }
+      render();
+    }
+
+    function addToCart(id) {
+      const product = products.find(item => item.id === id);
+      const cart = getCart();
+      const current = cart.find(item => item.id === id);
+      if (current) current.quantity += 1;
+      else cart.push({ ...product, quantity: 1 });
+      setCart(cart);
+      alert('已加入购物车');
+      renderProducts();
+    }
+
+    function changeQuantity(id, value) {
+      const cart = getCart();
+      const item = cart.find(row => row.id === id);
+      if (item) item.quantity = Math.max(1, Number(value));
+      setCart(cart);
+      renderCart();
+    }
+
+    function removeCart(id) {
+      setCart(getCart().filter(item => item.id !== id));
+      renderCart();
+    }
+
+    function checkout() {
+      localStorage.removeItem('cartItems');
+      alert('订单已模拟提交');
+      renderCart();
+    }
+
+    function setLayout(title, route) {
+      document.getElementById('title').textContent = title;
+      document.getElementById('nickname').textContent = localStorage.getItem('nickname') || '游客';
+      document.querySelectorAll('nav button').forEach(button => {
+        button.classList.toggle('active', button.dataset.route === route);
+      });
+    }
+
+    function renderProducts() {
+      const cartCount = getCart().reduce((sum, item) => sum + item.quantity, 0);
+      setLayout('商品管理', 'products');
+      document.getElementById('view').innerHTML = `
+        <div class="stack">
+          <section class="metrics">
+            <div class="metric"><span>商品数量</span><strong>${products.length}</strong></div>
+            <div class="metric"><span>购物车件数</span><strong>${cartCount}</strong></div>
+            <div class="metric"><span>登录状态</span><strong>已登录</strong></div>
+          </section>
+          <section class="grid">
+            ${products.map(product => `
+              <article class="card">
+                <img src="${product.image}" alt="${product.name}">
+                <div class="card-body">
+                  <span class="tag">${product.category}</span>
+                  <h2>${product.name}</h2>
+                  <p>库存 ${product.stock} 件，累计销量 ${product.sales} 件</p>
+                  <div class="row">
+                    <span class="price">¥${product.price}</span>
+                    <button onclick="addToCart(${product.id})">加入购物车</button>
+                  </div>
+                </div>
+              </article>
+            `).join('')}
+          </section>
+        </div>`;
+    }
+
+    function renderCart() {
+      const cart = getCart();
+      setLayout('购物车', 'cart');
+      if (!cart.length) {
+        document.getElementById('view').innerHTML = `
+          <div class="empty">
+            <p>购物车暂无商品</p>
+            <button onclick="navigate('products')">去选商品</button>
+          </div>`;
+        return;
+      }
+      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      document.getElementById('view').innerHTML = `
+        <div class="stack">
+          <table>
+            <thead><tr><th>商品</th><th>单价</th><th>数量</th><th>小计</th><th>操作</th></tr></thead>
+            <tbody>
+              ${cart.map(item => `
+                <tr>
+                  <td><div class="product-cell"><img src="${item.image}" alt="${item.name}"><div><strong>${item.name}</strong><br><span>${item.category}</span></div></div></td>
+                  <td>¥${item.price}</td>
+                  <td><input type="number" min="1" max="${item.stock}" value="${item.quantity}" onchange="changeQuantity(${item.id}, this.value)"></td>
+                  <td>¥${item.price * item.quantity}</td>
+                  <td><button class="danger" onclick="removeCart(${item.id})">删除</button></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <section class="checkout">
+            <div><span>合计数量：${totalCount} 件</span><br><strong class="price">应付金额：¥${totalPrice}</strong></div>
+            <button onclick="checkout()">提交订单</button>
+          </section>
+        </div>`;
+    }
+
+    function renderOrders() {
+      setLayout('我的订单', 'orders');
+      document.getElementById('view').innerHTML = `
+        <div class="stack">
+          <div class="alert">订单页是受保护路由，未登录用户访问时会被路由守卫重定向到登录页。</div>
+          <table>
+            <thead><tr><th>订单号</th><th>商品</th><th>金额</th><th>状态</th><th>下单时间</th></tr></thead>
+            <tbody>
+              ${orders.map(order => `
+                <tr>
+                  <td>${order.id}</td>
+                  <td>${order.name}</td>
+                  <td>¥${order.amount}</td>
+                  <td><span class="tag">${order.status}</span></td>
+                  <td>${order.createdAt}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    function render() {
+      const route = location.hash.replace('#/', '') || 'products';
+      const loginPage = document.getElementById('loginPage');
+      const appPage = document.getElementById('appPage');
+
+      if (route === 'login' || !isLoggedIn()) {
+        loginPage.classList.remove('hidden');
+        appPage.classList.add('hidden');
+        return;
+      }
+
+      loginPage.classList.add('hidden');
+      appPage.classList.remove('hidden');
+
+      if (route === 'cart') renderCart();
+      else if (route === 'orders') renderOrders();
+      else renderProducts();
+    }
+
+    window.addEventListener('hashchange', render);
+    render();
+  </script>
+</body>
+</html>

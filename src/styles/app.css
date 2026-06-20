@@ -1,0 +1,303 @@
+:root {
+  font-family: Inter, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  color: #1f2937;
+  background: #f4f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.side-nav {
+  background: #101828;
+  color: #ffffff;
+  padding: 22px 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px 22px;
+}
+
+.brand-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 8px;
+  background: #14b8a6;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.brand strong,
+.brand small {
+  display: block;
+}
+
+.brand small {
+  margin-top: 3px;
+  color: #a7b3c8;
+}
+
+.nav-menu {
+  border-right: none;
+  background: transparent;
+}
+
+.nav-menu .el-menu-item {
+  border-radius: 8px;
+  color: #d6deec;
+}
+
+.nav-menu .el-menu-item.is-active,
+.nav-menu .el-menu-item:hover {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 86px;
+  padding: 0 28px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.top-bar h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.top-bar p {
+  margin: 6px 0 0;
+  color: #667085;
+}
+
+.user-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.main-area {
+  padding: 28px;
+}
+
+.page-stack {
+  display: grid;
+  gap: 22px;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.metric,
+.product-card,
+.checkout-bar {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.metric {
+  padding: 18px 20px;
+}
+
+.metric span {
+  display: block;
+  color: #667085;
+}
+
+.metric strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 28px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.product-card {
+  overflow: hidden;
+}
+
+.product-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.product-info {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.product-info h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.product-info p {
+  margin: 0;
+  color: #667085;
+}
+
+.product-actions,
+.checkout-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.product-actions strong,
+.checkout-bar strong {
+  color: #dc2626;
+  font-size: 22px;
+}
+
+.data-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.table-product img {
+  width: 64px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.table-product span {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+}
+
+.checkout-bar {
+  padding: 18px 22px;
+}
+
+.checkout-bar span,
+.checkout-bar strong {
+  display: block;
+}
+
+.login-page {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  background: #ffffff;
+}
+
+.login-visual {
+  display: flex;
+  align-items: flex-end;
+  padding: 56px;
+  color: #ffffff;
+  background:
+    linear-gradient(135deg, rgba(16, 24, 40, 0.88), rgba(20, 184, 166, 0.62)),
+    url("https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&w=1400&q=80") center/cover;
+}
+
+.visual-content h1 {
+  margin: 8px 0 12px;
+  font-size: 48px;
+}
+
+.visual-content p,
+.visual-content span {
+  margin: 0;
+  font-size: 17px;
+}
+
+.login-panel {
+  display: flex;
+  align-items: center;
+  padding: 44px;
+}
+
+.login-panel h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.hint {
+  margin: 8px 0 24px;
+  color: #667085;
+}
+
+.full-button {
+  width: 100%;
+}
+
+.not-found {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  background: #f4f7fb;
+}
+
+.not-found h1 {
+  margin: 0;
+  font-size: 82px;
+}
+
+@media (max-width: 860px) {
+  .app-shell {
+    display: block;
+  }
+
+  .side-nav {
+    width: 100% !important;
+  }
+
+  .top-bar,
+  .user-panel,
+  .checkout-bar {
+    align-items: flex-start;
+    flex-direction: column;
+    height: auto;
+    padding: 18px;
+  }
+
+  .metric-grid,
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .login-visual {
+    min-height: 320px;
+    padding: 32px;
+  }
+}
